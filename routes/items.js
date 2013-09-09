@@ -56,7 +56,7 @@ exports.findLogForSFID = function(req, res) {
         db.items.find({ "sfid" : sfidToFind }, function(err, doc) {
 
                 if(err || !doc || !doc.length) {
-                        res.send("No documents with name: " + nameToFind);
+                        res.send("No documents with name: " + sfidToFind);
                         return;
                 }
 
