@@ -8,7 +8,11 @@ Get all items:
 
 Get item with _id value of 5069b47aa892630aae000007:
 
-	curl -i -X GET http://localhost:5000/items/5069b47aa892630aae000007
+	curl -i -X GET http://localhost:5000/items/log/1234
+
+Get log for items having sfid value of 1234:
+
+	curl -i -X GET http://localhost:5000/items/log
 
 Delete item with _id value of 5069b47aa892630aae000007:
 
