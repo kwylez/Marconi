@@ -17,6 +17,12 @@ db.items.ensureIndex( { "name": 1 }, { unique: true } );
 exports.findAll = function(req, res) {
 
 	db.items.find(function(err, docs) {
+
+		if(err) {
+			res.send("error finding all: " + err);
+			return;
+		}
+
 		res.send("num of items " + docs.length + " " + JSON.stringify(docs, null, "    "));
     });
 };
@@ -40,6 +46,22 @@ exports.findById = function(req, res) {
 
 		res.send(doc);
 	});
+};
+
+// FIND ENTIRE LOG FOR SFID
+exports.findLogForSFID = function(req, res) {
+
+        var sfidToFind = req.params.sfid;
+
+        db.items.find({ "sfid" : sfidToFind }, function(err, doc) {
+
+                if(err || !doc || !doc.length) {
+                        res.send("No documents with name: " + nameToFind);
+                        return;
+                }
+
+                res.send(doc);
+        });
 };
 
 

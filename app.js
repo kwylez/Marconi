@@ -17,6 +17,7 @@ app.configure(function () {
 
 app.get('/items', itemFetcher.findAll);
 app.get('/items/:id', itemFetcher.findById);
+app.get('/items/log/:sfid', itemFetcher.findLogForSFID);
 app.delete('/items/:id',itemFetcher.deleteById);
 app.post('/items',itemFetcher.addItem);
 app.put('/items/:id',itemFetcher.updateItem);
