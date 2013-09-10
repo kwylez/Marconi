@@ -9,7 +9,7 @@ var items = db.collection('items');
 var ObjectId = db.ObjectId;
 
 // Don't allow dups for name
-db.items.ensureIndex( { "name": 1 }, { unique: true } );
+//db.items.ensureIndex( { "name": 1 }, { unique: true } );
 
 /* Routes */
 
@@ -102,12 +102,12 @@ exports.addItem = function(req, res) {
 		return;
 	}
 
-	//console.log("adding item: " + JSON.stringify(anItem));
+	console.log("adding item: " + JSON.stringify(anItem));
 
 	db.items.insert(anItem, {safe:true}, function(err, result) {
 
 		if(err) 
-			res.send("Error inserting");
+			res.send("Error inserting "+ err);
 		else 
 			res.send(anItem); 
 	});
