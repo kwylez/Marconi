@@ -22,6 +22,9 @@ app.delete('/items/:id',itemFetcher.deleteById);
 app.post('/items',itemFetcher.addItem);
 app.put('/items/:id',itemFetcher.updateItem);
 
+// DEBUG for testing uploads for files
+app.post('/file',itemFetcher.addFile);
+
 
 app.listen(port, function() {
 	console.log("listing on port: " + port);
