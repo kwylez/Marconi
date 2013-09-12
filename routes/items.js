@@ -97,18 +97,21 @@ exports.deleteById = function(req, res) {
 // It isnt even close to working
 exports.addFile = function(req, res) {
 
-	var data = new Buffer('');
-	console.log("adding file");
+	var size = 0;
 
-	req.on('data', function(chunk) { //....never called
-		console.log("chunk");
-		data = Buffer.concat([data, chunk]);
-	});
+    req.on('data', function (data) {
+        size += data.length;
+        console.log('Got chunk: ' + data.length + ' total: ' + size);
+    });
 
-	req.on('end', function() {
-		req.rawBody = data;
-		console.log("done");
-	});
+    req.on('end', function () {
+        console.log("total size = " + size);
+        res.end("Thanks");
+    }); 
+
+    req.on('error', function(e) {
+        console.log("ERROR ERROR: " + e.message);
+    });
 };
 
 // INSERT
