@@ -92,7 +92,8 @@ exports.deleteById = function(req, res) {
 	});
 };
 
-// This needs to accept data, translate it into the file, then perform insert into the db
+// INSERT FROM UPLOADED FILE
+// Note: only using files here based on current limitations of NSURLSession
 exports.addFile = function(req, res) {
 
 	var data='';
@@ -107,7 +108,7 @@ exports.addFile = function(req, res) {
         console.log("got json " + data);
 
         db.items.insert(anItem, {safe:true}, function(err, result) {
-
+        	
 			if(err) {
 				console.log("Error inserting "+ err);
 				res.send("Error inserting "+ err);
@@ -120,7 +121,7 @@ exports.addFile = function(req, res) {
     });
     
     req.on('error', function(e) {
-        console.log("ERROR ERROR: " + e.message);
+        console.log("ERROR: " + e.message);
     });
 };
 
