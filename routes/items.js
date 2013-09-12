@@ -6,6 +6,7 @@ var verify = require('../validation/itemValidator.js');
 var conString = process.env.MONGOLAB_URI || "localhost/items";
 var db = mongojs(conString, ['items']);
 var items = db.collection('items');
+var fs = require('fs');
 var ObjectId = db.ObjectId;
 
 // Don't allow dups for name
@@ -91,28 +92,38 @@ exports.deleteById = function(req, res) {
 	});
 };
 
-
-
 // This needs to accept data, translate it into the file, then perform insert into the db
-// It isnt even close to working
 exports.addFile = function(req, res) {
 
-	var size = 0;
+	var data='';
 
-    req.on('data', function (data) {
-        size += data.length;
-        console.log('Got chunk: ' + data.length + ' total: ' + size);
+    req.on('data', function(chunk) { 
+       data += chunk;
     });
 
-    req.on('end', function () {
-        console.log("total size = " + size);
-        res.end("Thanks");
-    }); 
+    req.on('end', function() {
 
+        var anItem = JSON.parse(data);
+        console.log("got json " + data);
+
+        db.items.insert(anItem, {safe:true}, function(err, result) {
+
+			if(err) {
+				console.log("Error inserting "+ err);
+				res.send("Error inserting "+ err);
+			} else {
+				console.log("success");
+				res.send(anItem); 
+			}
+		});
+
+    });
+    
     req.on('error', function(e) {
         console.log("ERROR ERROR: " + e.message);
     });
 };
+
 
 // INSERT
 exports.addItem = function(req, res) {
