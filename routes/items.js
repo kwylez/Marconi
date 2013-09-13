@@ -9,9 +9,6 @@ var items = db.collection('items');
 var fs = require('fs');
 var ObjectId = db.ObjectId;
 
-// Don't allow dups for name
-//db.items.ensureIndex( { "name": 1 }, { unique: true } );
-
 /* Routes */
 
 // GRAB ALL
@@ -111,10 +108,10 @@ exports.addFile = function(req, res) {
         	
 			if(err) {
 				console.log("Error inserting "+ err);
-				res.send("Error inserting "+ err);
+				res.send(404); 
 			} else {
 				console.log("success");
-				res.send(anItem); 
+				res.send(201); 
 			}
 		});
 
