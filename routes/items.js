@@ -63,35 +63,9 @@ exports.findLogForSFID = function(req, res) {
 };
 
 
-// DELETE
-exports.deleteById = function(req, res) {
-
-	var idToFind = req.params.id;
-
-	if(verify.isValidObjectId(idToFind) == false) {
-		res.send("No document to delete with id: " + idToFind);
-		return;
-	}
-
-	db.items.remove({ _id : ObjectId(idToFind) }, function(err, result) {
-
-		if(err) {
-			res.send("Error deleting item with id: " + idToFind);
-			return;
-		}
-
-		console.log('delete result: ' + result);
-
-		if(result)
-			res.send("delete success");
-		else 
-			res.send("nothing to delete");
-	});
-};
-
 // INSERT FROM UPLOADED FILE
 // Note: only using files here based on current limitations of NSURLSession
-exports.addFile = function(req, res) {
+exports.addLog = function(req, res) {
 
 	var data='';
 
@@ -144,28 +118,6 @@ exports.addItem = function(req, res) {
 	});
 };
 
-
-// UPDATE
-exports.updateItem = function(req, res) {
-
-	var anItem = req.body;
-	var idToFind = req.params.id;
-
-	if (verify.isValidObjectId(idToFind) == false || verify.valid_item(anItem) == false) {
-		res.send("invalid update");
-		return;
-	}
-
-	db.items.update( { _id : ObjectId(idToFind) }, anItem, function(err, result) {
-
-		if(err) {
-			res.send("error updating");
-		}
-		else {
-			res.send(anItem);
-		}
-	});
-};
 
 
 

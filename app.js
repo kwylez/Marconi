@@ -18,12 +18,9 @@ app.configure(function () {
 app.get('/items', itemFetcher.findAll);
 app.get('/items/:id', itemFetcher.findById);
 app.get('/items/log/:sfid', itemFetcher.findLogForSFID);
-app.delete('/items/:id',itemFetcher.deleteById);
-app.post('/items',itemFetcher.addItem);
-app.put('/items/:id',itemFetcher.updateItem);
 
-// DEBUG for testing uploads for files
-app.post('/file',itemFetcher.addFile);
+// Primary upload route
+app.post('/log',itemFetcher.addLog);
 
 
 app.listen(port, function() {
