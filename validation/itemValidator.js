@@ -22,3 +22,19 @@ exports.valid_item = function(item) {
 	}
 	return true;
 };
+
+// Log insert request validation
+
+exports.valid_logReqest = function(req) {
+
+	var apiKey = req.header('api_key');
+
+	//TODO: more validation... 
+	if(req == null) {
+		return false;
+	} else if (apiKey == null || apiKey.length == 0)  {
+		return false;
+	}
+
+	return true;
+};
