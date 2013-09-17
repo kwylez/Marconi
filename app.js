@@ -1,17 +1,23 @@
 // SPD
- 
-var express = require('express');
-var app = express();
-var port = process.env.PORT;
-var itemFetcher = require('./routes/items');
+
+var express       = require('express');
+var app           = express();
+var port          = process.env.PORT;
+var itemFetcher   = require('./routes/items');
+var apiKeyFetcher = require('./routes/api_keys');
+var authValidator = require('./validation/AuthValidator');
 
 // Config
 
 app.configure(function () {
     app.use(express.logger());
     app.use(express.bodyParser());
+    app.use(express.cookieParser());
+    app.use(express.cookieSession({secret: "SocialNet secret key"}));
 });
 
+app.set('views', __dirname + '/views');
+app.engine('html', require('ejs').renderFile);
 
 // Routes
 
@@ -20,8 +26,67 @@ app.get('/items/:id', itemFetcher.findById);
 app.get('/items/log/:sfid', itemFetcher.findLogForSFID);
 
 // Primary upload route
-app.post('/log',itemFetcher.addLog);
 
+app.post('/log', itemFetcher.addLog);
+
+// Login form
+
+app.get('/login_form', function(req, res){
+  res.render('login_form.html');
+});
+
+app.post('/login', function(req, res) {
+  
+  console.log('login request');
+  
+  var username = req.param('username', null);
+  var password = req.param('password', null);
+
+  /**
+   * For now we are defaulting to admin/admin with password
+   * hardcoded
+   */
+
+  if (null == username || username.length < 1) {
+    
+    res.send(400);
+    
+    return;
+  }
+
+  if (username === 'admin' && password === 'admin') {
+
+    console.log('login was successful');
+    
+    req.session.user_id = 'admin';
+    
+    res.redirect('/admin');
+
+  } else {
+
+    res.send(401);
+    
+    return;
+  }
+});
+
+app.get('/logout', function(req, res) {
+  
+  console.log('logout request');
+
+  req.session = null;
+  
+  res.redirect('/login_form');
+});
+
+app.get('/api_keys', authValidator.checkAuth, apiKeyFetcher.findAll);
+app.post('/generate_key', authValidator.checkAuth, apiKeyFetcher.addAPIKey);
+
+// static files
+
+app.get('/admin', authValidator.checkAuth, function (req, res) {
+    res.render('admin.html');
+});
 
 app.listen(port, function() {
 	console.log("listing on port: " + port);
