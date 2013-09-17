@@ -14,6 +14,8 @@
     <div class="login">
       <h1>Generate API Key</h1>
       <p id="submit" style="color: red;">Click to Generate Key</p>
+      <p><a href="/view">View Logs</a></p>
+      <p><a href="/logout">Logout</a></p>
     </div>
     <div id="api_key">
       API key goes here
@@ -37,7 +39,7 @@
 
           if (data[0].api_key !== "" || data[0].api_key !== null) {
             
-            existingAPIKey = data[0].api_key;
+            existingAPIKey = "Current key: " + data[0].api_key;
           }
 
           $("#api_key").html(existingAPIKey);
