@@ -8,8 +8,6 @@ var mongojs   = require('mongojs');
 var conString = process.env.MONGOLAB_URI || "localhost/api_keys";
 var db        = mongojs(conString, ['api_keys']);
 var api_keys  = db.collection('api_keys');
-var fs        = require('fs');
-var ObjectId  = db.ObjectId;
 
 var generateRandomString = function() {
 
