@@ -13,9 +13,9 @@
 		var searchBy = function(){
 			var id = $('#sfid').val();
 			if(id){
-				$.get('/items/log/'+id, handleResponse);
+				$.get('/logs/log/'+id, handleResponse);
 			}else{
-				$.get('/items', handleResponse);			
+				$.get('/logs', handleResponse);			
 			}
 		}
 		

@@ -1,11 +1,9 @@
 // SPD
 
-var uri = process.env.MONGOLAB_URI;
-var mongojs = require('mongojs');
-var verify = require('../validation/itemValidator.js');
-var conString = process.env.MONGOLAB_URI || "localhost/items";
-var db = mongojs(conString, ['items']);
-var items = db.collection('items');
+
+var verify = require('../validation/logValidator.js');
+var db = require('../routes/collections.js').db();
+var logs = db.collection('logs');
 var ObjectId = db.ObjectId;
 
 /* Routes */
@@ -13,14 +11,14 @@ var ObjectId = db.ObjectId;
 // GRAB ALL
 exports.findAll = function(req, res) {
 
-	db.items.find(function(err, docs) {
+	db.logs.find(function(err, docs) {
 
 		if(err) {
 			res.send("error finding all: " + err);
 			return;
 		}
 
-		//res.send("num of items " + docs.length + " " + JSON.stringify(docs, null, "    "));
+		//res.send("num of logs " + docs.length + " " + JSON.stringify(docs, null, "    "));
 		res.send(docs);
     });
 };
@@ -35,7 +33,7 @@ exports.findById = function(req, res) {
 		return;
 	}
 
-	db.items.find({ _id : ObjectId(idToFind) }, function(err, doc) {
+	db.logs.find({ _id : ObjectId(idToFind) }, function(err, doc) {
 
 		if(err) {
 			res.send("No document with id: " + idToFind);
@@ -51,10 +49,10 @@ exports.findLogForSFID = function(req, res) {
 
         var sfidToFind = req.params.sfid;
 
-        db.items.find({ "sfid" : sfidToFind }, function(err, doc) {
+        db.logs.find({ "sfid" : sfidToFind }, function(err, doc) {
 
                 if(err || !doc || !doc.length) {
-                        res.send("No documents with name: " + sfidToFind);
+                        res.send("No logs with name: " + sfidToFind);
                         return;
                 }
 
@@ -68,11 +66,11 @@ exports.findLogForSFID = function(req, res) {
 exports.addLog = function(req, res) {
 
 	// Check headers for 'api_key'
-	if (verify.valid_logReqest(req) == false) {
-		console.log("bad log insert");
-		res.send(404);
-		return;
-	}
+	// if (verify.valid_logReqest(req) == false) {
+	// 	console.log("bad log insert");
+	// 	res.send(404);
+	// 	return;
+	// }
 
 	var data = '';
 
@@ -86,7 +84,7 @@ exports.addLog = function(req, res) {
         
         console.log("got json " + data);
 
-        db.items.insert(anItem, {safe:true}, function(err, result) {
+        db.logs.insert(anItem, {safe:true}, function(err, result) {
         	
 			if(err) {
 				console.log("Error inserting "+ err);
@@ -117,7 +115,7 @@ exports.addItem = function(req, res) {
 
 	console.log("adding item: " + JSON.stringify(anItem));
 
-	db.items.insert(anItem, {safe:true}, function(err, result) {
+	db.logs.insert(anItem, {safe:true}, function(err, result) {
 
 		if(err) 
 			res.send("Error inserting "+ err);

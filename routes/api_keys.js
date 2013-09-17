@@ -1,12 +1,5 @@
 
-/**
- * Which ones of these do I need?
- */
-
-var uri       = process.env.MONGOLAB_URI;
-var mongojs   = require('mongojs');
-var conString = process.env.MONGOLAB_URI || "localhost/api_keys";
-var db        = mongojs(conString, ['api_keys']);
+var db = require('../routes/collections.js').db();
 var api_keys  = db.collection('api_keys');
 
 var generateRandomString = function() {

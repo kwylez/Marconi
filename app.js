@@ -3,9 +3,10 @@
 var express       = require('express');
 var app           = express();
 var port          = process.env.PORT;
-var itemFetcher   = require('./routes/items');
+var logFetcher    = require('./routes/logs');
 var apiKeyFetcher = require('./routes/api_keys');
 var authValidator = require('./validation/AuthValidator');
+var logValidator = require('./validation/logValidator');
 
 // Config
 
@@ -23,16 +24,16 @@ app.engine('html', require('ejs').renderFile);
 
 // Routes
 
-app.get('/items', itemFetcher.findAll);
-app.get('/items/:id', itemFetcher.findById);
-app.get('/items/log/:sfid', itemFetcher.findLogForSFID);
+app.get('/logs', logFetcher.findAll);
+app.get('/logs/:id', logFetcher.findById);
+app.get('/logs/log/:sfid', logFetcher.findLogForSFID);
 app.get('/view', function(req,res){
  res.render('view.html');
 }); 
 
 // Primary upload route
 
-app.post('/log', itemFetcher.addLog);
+app.post('/log', logValidator.checkLogRequest, logFetcher.addLog);
 
 // Login form
 
