@@ -65,13 +65,6 @@ exports.findLogForSFID = function(req, res) {
 // Note: only using files here based on current limitations of NSURLSession
 exports.addLog = function(req, res) {
 
-	// Check headers for 'api_key'
-	// if (verify.valid_logReqest(req) == false) {
-	// 	console.log("bad log insert");
-	// 	res.send(404);
-	// 	return;
-	// }
-
 	var data = '';
 
     req.on('data', function(chunk) { 
