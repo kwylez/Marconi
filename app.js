@@ -28,7 +28,14 @@ app.get('/logs', logFetcher.findAll);
 app.get('/logs/:id', logFetcher.findById);
 app.get('/logs/log/:sfid', logFetcher.findLogForSFID);
 app.get('/view', function(req,res){
- res.render('view.html');
+	
+	if (req.session.user_id == null || req.session == null) {
+		console.log("Invalid session");
+	 	res.send(403);
+	 	return;
+	}
+
+	res.render('view.html');
 }); 
 
 // Primary upload route
