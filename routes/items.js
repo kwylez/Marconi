@@ -6,7 +6,6 @@ var verify = require('../validation/itemValidator.js');
 var conString = process.env.MONGOLAB_URI || "localhost/items";
 var db = mongojs(conString, ['items']);
 var items = db.collection('items');
-var fs = require('fs');
 var ObjectId = db.ObjectId;
 
 /* Routes */
