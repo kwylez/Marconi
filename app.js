@@ -14,6 +14,8 @@ app.configure(function () {
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.cookieSession({secret: "SocialNet secret key"}));
+    // wasnt working for me - mat
+    app.use(express.static(__dirname + '/public'));
 });
 
 app.set('views', __dirname + '/views');
@@ -24,6 +26,9 @@ app.engine('html', require('ejs').renderFile);
 app.get('/items', itemFetcher.findAll);
 app.get('/items/:id', itemFetcher.findById);
 app.get('/items/log/:sfid', itemFetcher.findLogForSFID);
+app.get('/view', function(req,res){
+ res.render('view.html');
+}); 
 
 // Primary upload route
 

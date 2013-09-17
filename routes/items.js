@@ -21,7 +21,8 @@ exports.findAll = function(req, res) {
 			return;
 		}
 
-		res.send("num of items " + docs.length + " " + JSON.stringify(docs, null, "    "));
+		//res.send("num of items " + docs.length + " " + JSON.stringify(docs, null, "    "));
+		res.send(docs);
     });
 };
 

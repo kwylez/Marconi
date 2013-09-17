@@ -1,0 +1,145 @@
+<html>
+<head>
+	<script src="https://s3.amazonaws.com/MathewKwok/jquery.js"></script>
+	<script src="https://s3.amazonaws.com/MathewKwok/datatables.js"></script>
+	<title>SFDC Logger</title>
+	<script>
+		var allData;
+		var oTable;
+		$(document).ready(function(){
+			$('#load').click(searchBy);
+		});
+		
+		var searchBy = function(){
+			var id = $('#sfid').val();
+			if(id){
+				$.get('/items/log/'+id, handleResponse);
+			}else{
+				$.get('/items', handleResponse);			
+			}
+		}
+		
+		var handleResponse = function(res){
+			if(res.indexOf('No documents') > -1){
+				showError('SFID not found');
+			}else{
+				allData = res;
+				oTable = $('#logTable').dataTable({
+					"bPaginate": false,
+					"bDestroy": true,
+					"bLengthChange": false,
+					"bFilter": true,
+					"bSort": true,
+					"bInfo": false,
+					"bAutoWidth": true,
+					"aaData": allData,
+		
+					"aoColumns": [		
+						{
+							"sTitle" : "Id",
+							"mDataProp" : "_id",
+						},
+						{
+							"sTitle" : "Channel",
+							"mDataProp" : "channelName",
+						},
+						{
+							"sTitle" : "Timestamp",
+							"mDataProp" : "currentTimestamp",
+						},
+						{
+							"sTitle" : "Locale",
+							"mDataProp" : "locale",
+						},
+						{
+							"sTitle" : "Message",
+							"mDataProp" : "message",
+						},
+						{
+							"sTitle" : "SFID",
+							"mDataProp" : "sfid",
+						},
+						{
+							"sTitle" : "UUID",
+							"mDataProp" : "uuid",
+						}
+					]});
+			}
+		};
+		
+		function showError(message){
+			$('#errorMessage').text(message);
+			$('#errorMessage').css('webkitTransition','');
+			$('#errorMessage').css('opacity','1');
+			setTimeout(function(){
+				$('#errorMessage').css('webkitTransition','opacity 1.0s ease-in-out');
+				$('#errorMessage').css('opacity','0');
+			},2000);
+		}
+	</script>
+	<style>
+		body {
+			background:#444;
+			font-family:Arial,sans-serif;
+			color:white;
+			font-size:12px;
+		}
+		#header {
+			padding-left:15px;
+		}
+		#data {
+			margin-top:10px;
+			padding-left:15px;
+		}
+		#filters{
+			padding-left:15px;
+		}
+		#filters input{
+			margin-left:0px;
+		}
+		h1 {
+			font-size:20px;
+			color:#c7c7c7;
+		}
+		#errorMessage{
+			color:red;
+			font-weight:bold;
+			font-style:italic;
+			opacity:0;
+		}
+		#logTable{
+			font-size:12px;
+			border-spacing:0px;
+			margin-top:5px;
+		}
+		#logTable th{
+			background:#e5e5e5;
+			color:#808080;
+		}
+		#logTable td{
+			font-weight:normal;
+			padding-left:10px;
+			padding-right:10px;
+		}
+		tr:nth-child(even) {
+			background-color: #777;
+		}
+		tr:nth-child(odd) {
+			background-color: #999;
+		}
+	</style>
+</head>
+<body>
+	<div id="header">
+		<h1>SFDC Logger</h1>
+	</div>
+	<div id="filters">
+		Please enter SFID, leave blank to load all.<br/>
+		<input id="sfid"></input><button id="load">Load</button>
+		<div id="errorMessage"></div>
+	</div>
+	<div id="data">
+		<table id="logTable"></table>
+	</div>
+</body>
+</html>
