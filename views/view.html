@@ -25,9 +25,9 @@
 			}else{
 				allData = res;
 				oTable = $('#logTable').dataTable({
-					"bPaginate": false,
+					"bPaginate": true,
 					"bDestroy": true,
-					"bLengthChange": false,
+					"bLengthChange": true,
 					"bFilter": true,
 					"bSort": true,
 					"bInfo": false,
@@ -138,6 +138,15 @@
 		}
 		tr:hover{
 			background:#000;
+		}
+		#logTable_previous{
+			padding:5px;
+		}
+		#logTable_next{
+			padding:5px;
+		}
+		#logTable_paginate{
+			margin-top:10px;
 		}
 	</style>
 </head>
