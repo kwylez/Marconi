@@ -37,7 +37,7 @@
 
           var existingAPIKey = "None available";
 
-          if (data[0].api_key !== "" || data[0].api_key !== null) {
+          if (data[0].api_key !== "" && data[0].api_key !== null && typeof(data[0].api_key) !== 'undefined') {
             
             existingAPIKey = "Current key: " + data[0].api_key;
           }
@@ -49,7 +49,7 @@
       function generateAPIKey() {
   
         $.post("/generate_key", function(data) {
-          $("#api_key").html(data[0].api_key);
+          $("#api_key").html("Current key: " + data[0].api_key);
         });
       }
     });
