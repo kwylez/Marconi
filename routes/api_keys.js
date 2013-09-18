@@ -1,6 +1,7 @@
 
-var db = require('../routes/collections.js').db();
-var api_keys  = db.collection('api_keys');
+var db       = require('../routes/collections.js').db();
+var api_keys = db.collection('api_keys');
+var cache    = require('memory-cache');
 
 var generateRandomString = function() {
 
@@ -17,33 +18,54 @@ var generateRandomString = function() {
 // GRAB ALL
 exports.findAll = function(req, res) {
 
-  db.api_keys.find(function(err, docs) {
+  if (cache.get('api_key') !== null) {
+    
+    res.send(cache.get('api_key'));
 
-    if (err) {
-      
-      res.send("error finding all: " + err);
-      
-      return;
-    }
+  } else {
 
-    res.send(JSON.stringify(docs, null, "    "));
-  });
+    db.api_keys.find(function(err, docs) {
+
+      if (err) {
+        
+        res.send("error finding all: " + err);
+        
+        return;
+      }
+      
+      cache.put('api_key', docs);
+      
+      res.send(JSON.stringify(docs, null, "    "));
+    });
+  }
 };
 
 // INSERT
 exports.addAPIKey = function(req, res) {
 
+  var api_key_string = '';
+
   /**
    * Delete existing and then recreate. Yes there is a better way to do this.
    */
   
+  cache.del('api_key');
+
   db.api_keys.remove();
 
-  db.api_keys.insert({'api_key' : generateRandomString()}, {safe:true}, function(err, result) {
+  api_key_string = generateRandomString();
+  
+  db.api_keys.insert({'api_key' : api_key_string}, {safe:true}, function(err, result) {
 
-    if (err) 
+    if (err) {
+     
       res.send("Error inserting "+ err);
-    else 
+
+    } else {
+      
+      cache.put('api_key', result);
+      
       res.send(result); 
+    }
   });
 };
