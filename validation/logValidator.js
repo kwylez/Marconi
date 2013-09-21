@@ -2,6 +2,7 @@
 
 var db = require('../routes/collections.js').db();
 var keys = db.collection('api_keys');
+var api_keys = require('../routes/api_keys.js')
 
 // ObjectIDs
 
@@ -31,32 +32,35 @@ exports.checkLogRequest = function(req, res, next) {
 
 	var apiKey = req.header('api_key');
 
-	keys.find(function(err, docs) {
-	    if (err) {
-			console.log('Error accessing api keys '+ err);
-        	res.send(404);
-        	return;
-	    }
+  var storedKey = null;
 
-	    console.log('comparing stored key: ' + JSON.stringify(docs, null, "    ") + ' with sent key: ' + apiKey);
-	    
-	    if(docs == null || docs.length == 0) {
-	    	console.log('No Stored key!');
-        	res.send(404);
-        	return;
-	    }
+  api_keys.getAPIKey(function(apiKeyObj, error){
 
-		var storedKey = docs[0]['api_key'];
+    if (error === null) {
+      
+      storedKey = apiKeyObj[0]['api_key'];
 
-		if (storedKey == "" || storedKey == null) {
-			console.log('Bad Stored Key');
-        	res.send(404);
-        } else if (storedKey == apiKey) {
-	    	next();
-        } else {
-			console.log('Permission Denied');
-        	res.send(404);
-        }
-  	});
+    } else {
+
+      console.log("invalid API key: " + error);
+    }
+  });
+
+  if (storedKey == "" || storedKey == null) {
+
+    console.log('Bad Stored Key');
+
+    res.send(400);
+
+  } else if (storedKey == apiKey) {
+
+      next();
+
+  } else {
+
+    console.log('Permission Denied' + storedKey);
+
+    res.send(401);
+  }
 };
 

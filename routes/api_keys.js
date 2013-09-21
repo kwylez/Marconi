@@ -15,12 +15,11 @@ var generateRandomString = function() {
   return text;
 }
 
-// GRAB ALL
-exports.findAll = function(req, res) {
+var getAPIKey = function(callback) {
 
   if (cache.get('api_key') !== null) {
     
-    res.send(cache.get('api_key'));
+   callback(cache.get('api_key'), null);
 
   } else {
 
@@ -28,16 +27,33 @@ exports.findAll = function(req, res) {
 
       if (err) {
         
-        res.send("error finding all: " + err);
+        callback(null, err);
+
+      } else {
         
-        return;
+        cache.put('api_key', docs);
+        
+        callback(docs, null);
       }
-      
-      cache.put('api_key', docs);
-      
-      res.send(JSON.stringify(docs, null, "    "));
     });
   }
+}
+
+// GRAB API KEY
+
+exports.getAPIKey = getAPIKey;
+
+// GRAB ALL
+exports.findAll = function(req, res) {
+
+    getAPIKey(function(apiKey, error){
+      
+      if (error !== null) {
+        res.send("error finding all: " + err);
+      } else {
+        res.send(cache.get('api_key'));  
+      }
+    });
 };
 
 // INSERT
